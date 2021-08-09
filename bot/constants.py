@@ -1,0 +1,2 @@
+# Constants
+DEFAULT_PREFIX = "$"

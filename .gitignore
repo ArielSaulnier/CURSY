@@ -1,0 +1,7 @@
+.idea
+*.rdb
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*.pyc
+__pycache__/
