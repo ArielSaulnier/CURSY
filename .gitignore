@@ -6,3 +6,6 @@ __pycache__/
 *.pyc
 __pycache__/
 *.env
+/node_modules
+config.json
+constants.py
