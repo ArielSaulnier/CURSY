@@ -4,3 +4,8 @@ export interface User {
     discriminator: number;
     avatar_url: string;
 }
+
+export interface Status{
+    guilds: number;
+    ping: number;
+}
