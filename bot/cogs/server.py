@@ -3,6 +3,7 @@ from discord.ext import commands
 from aiohttp import web
 
 import asyncio
+import discord
 import aiohttp_cors
 
 class Server(commands.Cog):
@@ -14,14 +15,43 @@ class Server(commands.Cog):
     async def get_status(self, request):
         return web.json_response({"guilds":len(self.bot.guilds),"ping":round(self.bot.latency * 1000)})
 
+    async def get_mutual_guilds(self, request):
+        json_data = await request.json()
+        guild_ids = json_data.get("guilds")
+        if not guild_ids:
+            return web.json_response({"error":"Invalid guilds"}, status=400)
+
+        guilds = []
+        for x in guild_ids:
+            guild : discord.Guild = self.bot.get_guild(int(x))
+            if not guild:
+                continue
+            if guild.get_member(self.bot.user.id):
+                guilds.append({
+                    "id": str(guild.id),
+                    "name": guild.name,
+                    "icon_url": str(guild.icon_url_as(format="png", size=512))
+                })
+        print(guilds)
+        return web.json_response({"guilds": guilds})
+
     async def start_server(self):
         app = web.Application()
         cors = aiohttp_cors.setup(app)
 
-        resource = cors.add(app.router.add_resource('/status'))
+        status = cors.add(app.router.add_resource('/status'))
+        guilds = cors.add(app.router.add_resource('/guilds'))
 
-        cors.add(resource.add_route('GET', self.get_status),{
+        cors.add(status.add_route('GET', self.get_status),{
             '*': aiohttp_cors.ResourceOptions(
+                allow_credentials=True,
+                expose_headers='*',
+                allow_headers='*',
+            )
+        })
+
+        cors.add(guilds.add_route('POST', self.get_mutual_guilds),{
+            'localhost:8000': aiohttp_cors.ResourceOptions(
                 allow_credentials=True,
                 expose_headers='*',
                 allow_headers='*',

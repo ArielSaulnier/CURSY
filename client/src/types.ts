@@ -9,3 +9,9 @@ export interface Status{
     guilds: number;
     ping: number;
 }
+
+export interface Guild{
+    id: string;
+    name: string;
+    icon_url: string;
+}

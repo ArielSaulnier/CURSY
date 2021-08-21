@@ -1,7 +1,9 @@
+from utils import return_token_or_raise, filter_guilds
 from sanic import Sanic
 from sanic.response import json
-from sanic.exceptions import InvalidUsage
+from sanic.exceptions import InvalidUsage,Unauthorized
 from sanic_cors import CORS
+from json import loads
 
 
 import constants
@@ -16,6 +18,8 @@ except:
     pass
 
 app = Sanic("My Hello, world app")
+app.config.FALLBACK_ERROR_FORMAT = "json"
+
 CORS(app)
 rest_client = hikari.RESTApp()
 
@@ -50,13 +54,13 @@ async def callback(request):
 
 @app.route('/users/me')
 async def get_own_user(request):
-    token=request.headers.get('access_token')
+    token= await return_token_or_raise(request)
     
-    if not token:
-        raise InvalidUsage("Invalid request")
-    
-    async with rest_client.acquire(token) as client:
-        user = await client.fetch_my_user()
+    try:
+        async with rest_client.acquire(token) as client:
+            user = await client.fetch_my_user()
+    except hikari.errors.UnauthorizedError:
+        raise Unauthorized("Invalid access token")
     
     return json({
         'id': str(user.id),
@@ -64,6 +68,25 @@ async def get_own_user(request):
         'discriminator': user.discriminator,
         'avatar_url': f'https://cdn.discordapp.com/avatars/{user.id}/{user.avatar_hash}.png?size=256'
     })
+
+@app.route('/guilds')
+async def get_mutual_guilds(request):
+    token= await return_token_or_raise(request)
+
+    try:
+        async with rest_client.acquire(token) as client:
+            user_guilds = await client.fetch_my_guilds()
+    except hikari.errors.UnauthorizedError:
+        raise Unauthorized("Invalid access token")
+
+    valid_guilds = await filter_guilds(user_guilds)
+    guild_ids = [str(x.id) for x in valid_guilds]
+
+    async with aiohttp.ClientSession() as session:
+        response = await session.post("http://localhost:6969/guilds", json={"guilds": guild_ids})
+        guilds = await response.text()
+    
+    return json(loads(guilds))
 
 if __name__ == "__main__":
     app.run(debug=True)
