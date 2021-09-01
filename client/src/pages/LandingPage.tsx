@@ -98,7 +98,7 @@ export const LandingPage: React.FC = () => {
             )}
             <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  className="animate-bounce w-8 h-8 hover:bg-purple-200 rounded-full"
+                  className="animate-bounce w-8 h-8 hover:bg-purple-200 hover:bg-opacity-25 rounded-full"
                   fill="#6D28D9"
                   stroke-linecap="round"
                   stroke-linejoin="round"

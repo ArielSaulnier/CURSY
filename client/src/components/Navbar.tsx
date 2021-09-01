@@ -25,7 +25,7 @@ function Nav() {
                     onClick={() => {
                       window.location.href = "/guilds";
                     }}
-                    className=" cursor-pointer text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+                    className=" font-semibold cursor-pointer text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
                   >
                     My guilds
                   </a>
@@ -34,7 +34,7 @@ function Nav() {
                     onClick={() => {
                         window.location.href = "/documentation";
                       }}
-                    className="cursor-pointer text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+                    className="font-semibold cursor-pointer text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
                   >
                     Documentation
                   </a>

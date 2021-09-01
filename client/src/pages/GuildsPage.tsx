@@ -50,8 +50,8 @@ export const GuildsPage: React.FC = () => {
     return (
       <div>
         <Nav/>
-        <div className="container mx-auto">
-          <div className="flex items-center h-full justify-center">
+        <div className="container mx-auto ">
+          <div className="flex items-center h-screen justify-center">
             <div className="h-3/4">
               <h1 className="text-white text-4xl mb16 text-center mb-24">
                 Guilds
@@ -59,7 +59,9 @@ export const GuildsPage: React.FC = () => {
               <div className="grid grid-cols-4 gap-10 ">
                 {guilds?.map((guild: Guild) => {
                   return (
-                    <div className="transition duration-500 transform hover:scale-110 rounded-t-lg rounded-b-lg bg-purple-700 hover:bg-purple-600 justify-center mb-24">
+                    <div  onClick={()=>{
+                      window.location.href=`/guilds/${guild.id}`
+                    }} className="transition duration-200 transform hover:scale-110 rounded-t-lg rounded-b-lg bg-purple-700 hover:bg-purple-600 justify-center mb-24">
                       <div className="flex item-center justify-center -mt-16">
                         <img
                           src={guild.icon_url}
@@ -85,7 +87,7 @@ export const GuildsPage: React.FC = () => {
                   src={user?.avatar_url}
                   alt=""
                   width="50"
-                  className="rounded-full "
+                  className="rounded-full border-2 border-white "
                 />
                 
               </div>

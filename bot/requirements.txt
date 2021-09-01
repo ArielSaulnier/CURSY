@@ -3,3 +3,4 @@ asyncpg
 tortoise-orm
 python-dotenv
 aiohttp_cors
+numpy

@@ -4,6 +4,8 @@ import os
 import platform
 import random
 import sys
+import numpy as np
+from datetime import datetime
 
 import aiohttp
 import discord
@@ -21,6 +23,8 @@ class general(commands.Cog, name="general"):
         Get some information about the bot.
         """
         config = await GuildConfig.filter(id=context.guild.id).get_or_none()
+        usercount = [x.member_count for x in self.bot.guilds]
+        usercount = np.sum(usercount)
         embed = discord.Embed(
             description="Bot Cursy",
             color=0x42F56C
@@ -43,6 +47,19 @@ class general(commands.Cog, name="general"):
             value=f"{config.prefix}",
             inline=False
         )
+        embed.add_field(
+            name="Servers",
+            value=f"{len(self.bot.guilds)}"
+        )
+        embed.add_field(
+            name="Users",
+            value=f"{usercount}"
+        )
+        embed.add_field(
+            name="Ping",
+            value=f"{round(self.bot.latency * 1000)} ms"
+        )
+        embed.set_thumbnail(url=self.bot.user.avatar_url)
         embed.set_footer(
             text=f"Requested by {context.message.author}"
         )
@@ -99,18 +116,6 @@ class general(commands.Cog, name="general"):
         )
         await context.send(embed=embed)
 
-    @commands.command(name="ping")
-    async def ping(self, context):
-        """
-        Check if the bot is alive.
-        """
-        embed = discord.Embed(
-            title="🏓 Pong!",
-            description=f"The bot latency is {round(self.bot.latency * 1000)}ms.",
-            color=0x42F56C
-        )
-        await context.send(embed=embed)
-
     @commands.command(name="poll")
     async def poll(self, context, *, title):
         """
@@ -145,6 +150,9 @@ class general(commands.Cog, name="general"):
                 description=f"**Dogecoin price is: ${response['data']['prices'][0]['price']} USD**",
                 color=0x42F56C
             )
+            embed.set_footer(
+            text=f"Fetched at: {datetime.fromtimestamp(response['data']['prices'][0]['time']).strftime('%H:%M:%S')}"
+        )
             embed.set_thumbnail(url="https://dogecoin.com/assets/img/dogecoin-300.png")
             await context.send(embed=embed)
 
